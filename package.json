@@ -1,0 +1,11 @@
+{
+  "name": "arch",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "vite"
+  },
+  "dependencies": {
+    "vite": "8.2.1"
+  }
+}
