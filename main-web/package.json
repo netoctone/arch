@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc --noEmit -p tsconfig.app.json && echo '0 type errors'",
     "watch": "tsc --noEmit --watch -p tsconfig.app.json",
+    "lint": "oxlint",
     "start": "vite"
   },
   "dependencies": {
@@ -19,6 +20,7 @@
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
     "@vitejs/plugin-react": "6.0.5",
+    "oxlint": "1.79.0",
     "prettier": "3.9.6",
     "typescript": "7.0.2"
   },

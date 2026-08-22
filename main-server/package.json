@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc --noEmit -p tsconfig.json && echo '0 type errors'",
     "watch": "tsc --noEmit --watch -p tsconfig.json",
+    "lint": "oxlint",
     "start": "node src/app.ts"
   },
   "dependencies": {
@@ -15,6 +16,7 @@
   "devDependencies": {
     "@types/express": "5.0.6",
     "@types/node": "26.2.0",
+    "oxlint": "1.79.0",
     "prettier": "3.9.6",
     "typescript": "7.0.2"
   }
