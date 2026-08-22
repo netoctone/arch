@@ -1,0 +1,20 @@
+{
+  "name": "arch-server",
+  "version": "0.0.0",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit -p tsconfig.json && echo '0 type errors'",
+    "watch": "tsc --noEmit --watch -p tsconfig.json",
+    "start": "node src/app.ts"
+  },
+  "dependencies": {
+    "express": "5.2.1",
+    "socket.io": "4.8.3"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.6",
+    "@types/node": "26.2.0",
+    "typescript": "7.0.2"
+  }
+}

@@ -4,7 +4,7 @@ $ pnpm install
 
 # Usage
 
-$ npm run start
+$ npm run start 
 
 # Development
 
