@@ -1,3 +1,4 @@
+import { type GetFileDependencyGraphPayload } from 'arch-shared-types';
 import express, { type Express, type Request, type Response } from 'express';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
@@ -24,7 +25,10 @@ io.on('connection', (socket) => {
     console.log(`getFileDependencyGraph: "${filePath}"`);
     const { edges, nodes } = parseQueue(filePath, { debug: false });
     console.log(edges.length);
-    socket.emit('re:getFileDependencyGraph', JSON.stringify({ edges, nodes }));
+    socket.emit(
+      're:getFileDependencyGraph',
+      JSON.stringify({ edges, nodes } satisfies GetFileDependencyGraphPayload)
+    );
   });
 });
 
