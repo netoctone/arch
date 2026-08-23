@@ -4,6 +4,8 @@ import { Server } from 'socket.io';
 
 import { parseQueue } from './parser/parser.ts';
 
+let activeConnections = 0;
+
 const app: Express = express();
 const server = createServer(app);
 const io = new Server(server, {
@@ -11,7 +13,13 @@ const io = new Server(server, {
   path: '/ws'
 });
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  activeConnections += 1;
+  console.log(`a user connected. total: ${activeConnections}`);
+  socket.on('disconnect', (reason) => {
+    activeConnections -= 1;
+    console.log(`a user disconnected: "${reason}". total: ${activeConnections}`);
+  });
+
   socket.on('getFileDependencyGraph', (filePath: string) => {
     console.log(`getFileDependencyGraph: "${filePath}"`);
     const { edges, nodes } = parseQueue(filePath, { debug: false });
