@@ -2,6 +2,8 @@ import express, { type Express, type Request, type Response } from 'express';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 
+import { parseQueue } from './parser/parser.ts';
+
 const app: Express = express();
 const server = createServer(app);
 const io = new Server(server, {
@@ -10,8 +12,11 @@ const io = new Server(server, {
 });
 io.on('connection', (socket) => {
   console.log('a user connected');
-  socket.on('chat message', (msg) => {
-    console.log(`client sent message: "${msg}"`);
+  socket.on('getFileDependencyGraph', (filePath: string) => {
+    console.log(`getFileDependencyGraph: "${filePath}"`);
+    const { edges, nodes } = parseQueue(filePath, { debug: false });
+    console.log(edges.length);
+    socket.emit('re:getFileDependencyGraph', JSON.stringify({ edges, nodes }));
   });
 });
 
