@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
+import { DependencyEdge, FileNode } from 'arch-shared-types';
 import { parseSync, type Program } from 'oxc-parser';
 import { ResolverFactory } from 'oxc-resolver';
 import path from 'path';
@@ -7,17 +8,7 @@ interface CliOptions {
   debug: boolean;
 }
 
-interface FileNode {
-  file: string;
-  depth: number;
-}
-
 type Nodes = Map<string, FileNode>;
-
-interface DependencyEdge {
-  parentFile: string;
-  childFile: string;
-}
 
 const resolver = new ResolverFactory({
   conditionNames: ['node', 'import'],

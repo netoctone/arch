@@ -27,6 +27,9 @@ importers:
       '@types/node':
         specifier: 26.2.0
         version: 26.2.0
+      arch-shared-types:
+        specifier: file:../arch-shared-types
+        version: file:../arch-shared-types
       oxlint:
         specifier: 1.79.0
         version: 1.79.0
@@ -574,6 +577,9 @@ packages:
   accepts@2.0.0:
     resolution: {integrity: sha512-5cvg6CtKwfgdmVqY1WIiXKc3Q1bkRqGLi+2W/6ao+6Y7gu/RCwRuAhGEzh5B4KlszSuTLgZYuqFqo5bImjNKng==}
     engines: {node: '>= 0.6'}
+
+  arch-shared-types@file:../arch-shared-types:
+    resolution: {directory: ../arch-shared-types, type: directory}
 
   base64id@2.0.0:
     resolution: {integrity: sha512-lGe34o6EHj9y3Kts9R4ZYs/Gr+6N7MCaMlIFA3F1R2O5/m7K06AxfSeO5530PEERE6/WyEg3lsuyw4GHlPZHog==}
@@ -1247,6 +1253,8 @@ snapshots:
     dependencies:
       mime-types: 3.0.2
       negotiator: 1.1.0
+
+  arch-shared-types@file:../arch-shared-types: {}
 
   base64id@2.0.0: {}
 

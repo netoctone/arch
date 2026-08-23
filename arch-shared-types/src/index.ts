@@ -1,0 +1,9 @@
+export interface FileNode {
+  file: string;
+  depth: number;
+}
+
+export interface DependencyEdge {
+  parentFile: string;
+  childFile: string;
+}
