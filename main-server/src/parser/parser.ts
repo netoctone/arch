@@ -7,7 +7,12 @@ interface CliOptions {
   debug: boolean;
 }
 
-type Nodes = Set<string>;
+interface FileNode {
+  file: string;
+  depth: number;
+}
+
+type Nodes = Map<string, FileNode>;
 
 interface DependencyEdge {
   parentFile: string;
@@ -31,21 +36,28 @@ export const extractRelativeImports = (ast: Program): string[] => {
 };
 
 // @param {string} filePath - absolute path
+// @param cliOptions
 // @param edges - will mutate
 // @param nodes - will mutate
+// @param filesQueue - will mutate
 export const parse = (
-  filePath: string,
+  node: FileNode,
   cliOptions: CliOptions,
   edges: DependencyEdge[],
   nodes: Nodes,
-  filesQueue: string[]
+  filesQueue: FileNode[]
 ): void => {
+  const { file: filePath, depth } = node;
+  const nextDepth = depth + 1;
+  if (nodes.has(filePath)) {
+    return;
+  }
   const exists = existsSync(filePath);
   if (cliOptions.debug) {
     console.log(`${exists ? '' : '(x) '}${filePath}`);
   }
   if (exists) {
-    nodes.add(filePath);
+    nodes.set(filePath, { file: filePath, depth: depth });
     const bytes = readFileSync(filePath);
     const programAST: Program = parseSync(filePath, bytes.toString()).program;
     const importPaths = extractRelativeImports(programAST);
@@ -65,7 +77,7 @@ export const parse = (
       if (childFile) {
         edges.push({ parentFile: filePath, childFile: childFile });
         if (!nodes.has(childFile)) {
-          filesQueue.push(childFile);
+          filesQueue.push({ file: childFile, depth: nextDepth });
         }
       }
     }
@@ -76,16 +88,16 @@ export const parse = (
 export const parseQueue = (
   filePath: string,
   cliOptions: CliOptions
-): { edges: DependencyEdge[]; nodes: string[] } => {
+): { edges: DependencyEdge[]; nodes: FileNode[] } => {
   const edges: DependencyEdge[] = [];
-  const nodes: Nodes = new Set();
+  const nodes: Nodes = new Map();
 
-  const queue: string[] = [filePath];
-  let file: string | undefined;
-  while ((file = queue.shift())) {
-    parse(file, cliOptions, edges, nodes, queue);
+  const queue: FileNode[] = [{ file: filePath, depth: 0 }];
+  let node: FileNode | undefined;
+  while ((node = queue.shift())) {
+    parse(node, cliOptions, edges, nodes, queue);
   }
-  return { edges, nodes: Array.from(nodes) };
+  return { edges, nodes: Array.from(nodes.values()) };
 };
 
 if (process.argv[2]) {
