@@ -12,3 +12,8 @@ export interface GetFileDependencyGraphPayload {
   nodes: FileNode[];
   edges: DependencyEdge[];
 }
+
+export interface GetFilePayload {
+  file: string;
+  text: string;
+}

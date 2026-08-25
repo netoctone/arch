@@ -1,5 +1,6 @@
-import { type GetFileDependencyGraphPayload } from 'arch-shared-types';
+import type { GetFileDependencyGraphPayload, GetFilePayload } from 'arch-shared-types';
 import express, { type Express, type Request, type Response } from 'express';
+import { readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 
@@ -29,6 +30,17 @@ io.on('connection', (socket) => {
       're:getFileDependencyGraph',
       JSON.stringify({ edges, nodes } satisfies GetFileDependencyGraphPayload)
     );
+  });
+  socket.on('getFile', (filePath: string) => {
+    console.log(`getFile: "${filePath}"`);
+    try {
+      const text = readFileSync(filePath).toString();
+      socket.emit('re:getFile', JSON.stringify({ file: filePath, text } satisfies GetFilePayload));
+    } catch (e) {
+      if (e instanceof Error) {
+        console.log(`err:getFile: "${e.message}"`);
+      }
+    }
   });
 });
 
