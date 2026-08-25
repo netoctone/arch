@@ -1,7 +1,7 @@
 import { GetFilePayload, GetFileDependencyGraphPayload } from 'arch-shared-types';
 import React, { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { SyntaxModals } from './components/SyntaxModals';
+import { SigmaAndSyntaxModals } from './components/SigmaAndSyntaxModals';
 import { AppStateProvider, useAppState } from './hooks/useAppState';
 import { buildSigmaGraphFromPayloadGraph } from './pure/build-sigma-graph';
 
@@ -11,7 +11,7 @@ export const AppContent = () => {
   const [pathInput, setPathInput] = useState('');
   const [isFetchingGraph, setIsFetchingGraph] = useState(false);
 
-  const { sigmaContainerRef, setSigmaGraph, selectedNode, openSyntaxModal } = useAppState();
+  const { setSigmaGraph, selectedNode, openSyntaxModal } = useAppState();
 
   // initialise once
   useEffect(() => {
@@ -40,19 +40,22 @@ export const AppContent = () => {
 
   return (
     <div>
-      <div>
-        <label htmlFor="pathInput">Enter absolute path of the Angular project root src file</label>
+      <div className="app-header">
+        <div>
+          <label htmlFor="pathInput">
+            Enter absolute path of the Angular project root src file
+          </label>
+        </div>
+        <div>
+          <input id="pathInput" type="text" onChange={(e) => setPathInput(e.target.value)} />
+        </div>
+        <div>
+          <button onClick={() => requestDependencyGraph(pathInput)}>
+            {isFetchingGraph ? 'fetching ...' : 'fetch'}
+          </button>
+        </div>
       </div>
-      <div>
-        <input id="pathInput" type="text" onChange={(e) => setPathInput(e.target.value)} />
-      </div>
-      <div>
-        <button onClick={() => requestDependencyGraph(pathInput)}>
-          {isFetchingGraph ? 'fetching ...' : 'fetch'}
-        </button>
-      </div>
-      <div className="sigma-container" ref={sigmaContainerRef}></div>
-      <SyntaxModals />
+      <SigmaAndSyntaxModals />
     </div>
   );
 };

@@ -1,10 +1,44 @@
+:root {
+  --header-height: 100px;
+}
+
 html, body {
   height: 100%;
   width: 100%;
 }
 
-.sigma-container {
+.app-header {
+  max-height: var(--header-height);
+  overflow-y: scroll;
+}
+
+.sigma-and-syntax-modals {
+  display: flex;
   position: absolute;
   inset: 0;
-  top: 100px;
+  top: var(--header-height);
+}
+
+/* sigma lib will crash if container element has 0 height or 0 width */
+.sigma-container {
+  width: 50%;
+  height: 100%;
+}
+
+.syntax-modals-left, .syntax-modals-right {
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  width: 25%;
+  height: 100%;
+}
+
+.syntax-modal {
+  flex: 1;
+  overflow-y: scroll;
+}
+
+.syntax-modal + .syntax-modal {
+  border-top: 1px solid black;
 }
