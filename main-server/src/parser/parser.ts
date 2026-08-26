@@ -26,7 +26,7 @@ export const extractRelativeImports = (ast: Program): string[] => {
   return importPaths;
 };
 
-// @param {string} filePath - absolute path
+// @param node - has field `file` with absolute path, and `depth`
 // @param cliOptions
 // @param edges - will mutate
 // @param nodes - will mutate
@@ -53,11 +53,11 @@ export const parse = (
     const programAST: Program = parseSync(filePath, bytes.toString()).program;
     const importPaths = extractRelativeImports(programAST);
     for (const importPath of importPaths) {
-      // resolveFileSync(filePath, ...).path depends on `filePath` argument format:
-      // | filePath     | resolverRsult.path                                   |
-      // | /some/path/? | /some/path/? (absolute remains)                      |
-      // | ../../some/? | some/?       (relative drops '..')                   |
-      // | some/path/?  | some/path/?  (relative that didn't have '../' is ok) |
+      // resolverResult.path depends on `filePath` argument format:
+      // | filePath          | resolveFileSync(filePath, ...).path                  |
+      // | /some/path/?      | /some/path/? (absolute remains)                      |
+      // | ../../some/path/? | some/path/?  (relative drops '..')                   |
+      // | some/path/?       | some/path/?  (relative that didn't have '../' is ok) |
       const resolverResult = resolver.resolveFileSync(filePath, importPath);
       // console.log(resolverResult.packageJsonPath);
       // console.log(resolverResult.error || resolverResult.path);
@@ -75,7 +75,7 @@ export const parse = (
   }
 };
 
-// @param {string} filePath - absolute path
+// @param filePath - absolute path
 export const parseQueue = (
   filePath: string,
   cliOptions: CliOptions
