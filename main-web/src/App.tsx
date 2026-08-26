@@ -25,6 +25,10 @@ export const AppContent = () => {
       const { file, text } = JSON.parse(result) as GetFilePayload;
       openSyntaxModal({ file, text });
     });
+    return () => {
+      socket.off('re:getFileDependencyGraph');
+      socket.off('re:getFile');
+    };
   }, []);
   useEffect(() => {
     if (!selectedNode) {

@@ -36,7 +36,25 @@ html, body {
 
 .syntax-modal {
   flex: 1;
+  position: relative;
   overflow-y: scroll;
+}
+
+@keyframes highlight-background {
+  0% { background-color: white; }
+  50% { background-color: green; }
+  100% { background-color: white; }
+}
+
+.syntax-modal--animated {
+  animation: highlight-background 2000ms;
+}
+
+.syntax-modal-close {
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 .syntax-modal + .syntax-modal {

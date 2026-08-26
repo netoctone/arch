@@ -1,19 +1,29 @@
 import { GetFilePayload } from 'arch-shared-types';
 import Graph from 'graphology';
 import Sigma from 'sigma';
-import { createContext, ReactNode, RefObject, useContext, useEffect, useRef, useState } from 'react';
+import {
+  createContext,
+  ReactNode,
+  RefObject,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 import { SigmaGraph } from '../pure/build-sigma-graph';
 
-export interface SyntaxModal extends GetFilePayload {};
-
-export type SyntaxModalsMap = Map<string, SyntaxModal>;
+export interface SyntaxModal extends GetFilePayload {
+  isClosed?: boolean;
+  toAnimateAt?: number;
+}
 
 interface AppState {
   sigmaContainerRef: RefObject<HTMLDivElement | null>;
   setSigmaGraph: (sigmaGraph: SigmaGraph) => void;
   selectedNode: string | null;
   openSyntaxModal: (modal: SyntaxModal) => void;
-  syntaxModals: SyntaxModalsMap;
+  closeSyntaxModal: (modal: SyntaxModal) => void;
+  syntaxModals: SyntaxModal[];
 }
 
 const AppStateContext = createContext<AppState | null>(null);
@@ -22,7 +32,7 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
   const sigmaContainerRef = useRef<HTMLDivElement>(null);
   const sigmaRef = useRef<Sigma | null>(null);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
-  const [syntaxModals, setSyntaxModals] = useState<SyntaxModalsMap>(new Map());
+  const [syntaxModals, setSyntaxModals] = useState<SyntaxModal[]>([]);
 
   // initialise once
   useEffect(() => {
@@ -57,9 +67,33 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
 
   const openSyntaxModal = (modal: SyntaxModal) => {
     setSyntaxModals((prev) => {
-      const newMap = new Map(prev);
-      newMap.set(modal.file, modal);
-      return newMap;
+      const newModals = [...prev];
+      const indexOfExisting = prev.findIndex((m) => m.file === modal.file);
+      if (indexOfExisting >= 0 && newModals[indexOfExisting]) {
+        newModals[indexOfExisting] = {
+          ...newModals[indexOfExisting],
+          ...modal,
+          toAnimateAt: Temporal.Now.instant().epochMilliseconds + 1000
+        };
+        return newModals;
+      }
+      const indexOfClosed = newModals.findIndex((m) => m.isClosed);
+      if (indexOfClosed >= 0) {
+        newModals[indexOfClosed] = modal;
+      } else {
+        newModals.push(modal);
+      }
+      return newModals;
+    });
+  };
+  const closeSyntaxModal = (modal: SyntaxModal) => {
+    setSyntaxModals((prev) => {
+      const newModals = [...prev];
+      const indexOfClosed = newModals.findIndex((m) => m.file === modal.file);
+      if (indexOfClosed >= 0 && newModals[indexOfClosed]) {
+        newModals[indexOfClosed] = { ...newModals[indexOfClosed], isClosed: true };
+      }
+      return newModals;
     });
   };
 
@@ -68,6 +102,7 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
     setSigmaGraph,
     selectedNode,
     openSyntaxModal,
+    closeSyntaxModal,
     syntaxModals
   };
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;

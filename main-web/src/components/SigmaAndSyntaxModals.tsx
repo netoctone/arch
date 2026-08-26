@@ -3,9 +3,8 @@ import { SyntaxModalsList } from './SyntaxModalsList';
 
 export const SigmaAndSyntaxModals = () => {
   const { sigmaContainerRef, syntaxModals } = useAppState();
-  const modals = [...syntaxModals.values()];
-  const modalsLeft = modals.filter((m, i) => i % 2 == 0);
-  const modalsRight = modals.filter((m, i) => i % 2 == 1);
+  const modalsLeft = syntaxModals.filter((m, i) => i % 2 == 0);
+  const modalsRight = syntaxModals.filter((m, i) => i % 2 == 1);
   return (
     <div className="sigma-and-syntax-modals">
       <div className="syntax-modals-left">
