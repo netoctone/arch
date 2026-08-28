@@ -1,6 +1,7 @@
 import { GetFilePayload } from 'arch-shared-types';
 import Graph from 'graphology';
 import Sigma from 'sigma';
+import { NodeDisplayData } from 'sigma/types';
 import {
   createContext,
   ReactNode,
@@ -41,7 +42,14 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
     const sigma = new Sigma(new Graph(), sigmaContainerRef.current, {
-      renderLabels: true
+      renderLabels: true,
+
+      nodeReducer: (nodeId, nodeData): Partial<NodeDisplayData> => {
+        const res = { ...nodeData };
+        res.size ||= 8;
+        res.color ||= '#ed6f48';
+        return res;
+      }
     });
     sigmaRef.current = sigma;
 
