@@ -1,3 +1,4 @@
+import { Prism as PrismSyntaxHighlighter } from 'react-syntax-highlighter';
 import { SyntaxModal, useAppState } from '../hooks/useAppState';
 
 export const SyntaxModalsList = ({ modals }: { modals: SyntaxModal[] }) => {
@@ -14,7 +15,9 @@ export const SyntaxModalsList = ({ modals }: { modals: SyntaxModal[] }) => {
           (x)
         </div>
         <div>{modal.file}</div>
-        <div>{modal.text}</div>
+        <PrismSyntaxHighlighter language={modal.file.endsWith('.ts') ? 'typescript' : undefined}>
+          {modal.text}
+        </PrismSyntaxHighlighter>
       </div>
     );
   });
