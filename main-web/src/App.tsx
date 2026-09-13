@@ -11,15 +11,24 @@ export const AppContent = () => {
   const [pathInput, setPathInput] = useState('');
   const [isFetchingGraph, setIsFetchingGraph] = useState(false);
 
-  const { setSigmaGraph, selectedNode, openSyntaxModal } = useAppState();
+  const {
+    setSigmaGraph,
+    selectedNode,
+    openSyntaxModal,
+    setPathPackageJson,
+    pathPackageJson: pathProject,
+    toggleView,
+    viewMode
+  } = useAppState();
 
   // initialise once
   useEffect(() => {
     socket.on('re:getFileDependencyGraph', (result: string) => {
       setIsFetchingGraph(false);
-      const { edges, nodes } = JSON.parse(result) as GetFileDependencyGraphPayload;
+      const { pathPackageJson, edges, nodes } = JSON.parse(result) as GetFileDependencyGraphPayload;
       //console.log(`received ${edges.length} edges, ${nodes.length} nodes`);
-      setSigmaGraph(buildSigmaGraphFromPayloadGraph({ edges, nodes }));
+      setSigmaGraph(buildSigmaGraphFromPayloadGraph({ pathPackageJson, edges, nodes }));
+      setPathPackageJson(pathPackageJson);
     });
     socket.on('re:getFile', (result: string) => {
       const { file, text } = JSON.parse(result) as GetFilePayload;
@@ -53,10 +62,12 @@ export const AppContent = () => {
         <div>
           <input id="pathInput" type="text" onChange={(e) => setPathInput(e.target.value)} />
         </div>
-        <div>
+        <div className="app-controls-row">
           <button onClick={() => requestDependencyGraph(pathInput)}>
             {isFetchingGraph ? 'fetching ...' : 'fetch'}
           </button>
+          <button onClick={() => toggleView()}>view: {viewMode}</button>
+          <div>{pathProject ? <span>project: {pathProject}</span> : null}</div>
         </div>
       </div>
       <SigmaAndSyntaxModals />

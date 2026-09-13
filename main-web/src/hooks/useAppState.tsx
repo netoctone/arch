@@ -18,13 +18,22 @@ export interface SyntaxModal extends GetFilePayload {
   toAnimateAt?: number;
 }
 
+export type ViewMode = 'graph' | 'files';
+
 interface AppState {
   sigmaContainerRef: RefObject<HTMLDivElement | null>;
   setSigmaGraph: (sigmaGraph: SigmaGraph) => void;
   selectedNode: string | null;
+
   openSyntaxModal: (modal: SyntaxModal) => void;
   closeSyntaxModal: (modal: SyntaxModal) => void;
   syntaxModals: SyntaxModal[];
+
+  setPathPackageJson: (path: string | null) => void;
+  pathPackageJson: string | null;
+
+  toggleView: () => void;
+  viewMode: ViewMode;
 }
 
 const AppStateContext = createContext<AppState | null>(null);
@@ -32,8 +41,10 @@ const AppStateContext = createContext<AppState | null>(null);
 export const AppStateProvider = ({ children }: { children: ReactNode }) => {
   const sigmaContainerRef = useRef<HTMLDivElement>(null);
   const sigmaRef = useRef<Sigma | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('graph');
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [syntaxModals, setSyntaxModals] = useState<SyntaxModal[]>([]);
+  const [pathPackageJson, setPathPackageJson] = useState<string | null>(null);
 
   // initialise once
   useEffect(() => {
@@ -105,13 +116,22 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  const toggleView = () => {
+    const newViewMode = viewMode === 'graph' ? 'files' : 'graph';
+    setViewMode(newViewMode);
+  };
+
   const value: AppState = {
     sigmaContainerRef,
     setSigmaGraph,
     selectedNode,
     openSyntaxModal,
     closeSyntaxModal,
-    syntaxModals
+    syntaxModals,
+    setPathPackageJson,
+    pathPackageJson,
+    toggleView,
+    viewMode
   };
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;
 };

@@ -11,6 +11,7 @@ export interface DependencyEdge {
 export interface GetFileDependencyGraphPayload {
   nodes: FileNode[];
   edges: DependencyEdge[];
+  pathPackageJson: string | null;
 }
 
 export interface GetFilePayload {

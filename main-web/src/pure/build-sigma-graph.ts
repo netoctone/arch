@@ -28,11 +28,11 @@ export const buildSigmaGraphFromPayloadGraph = ({
     const newNodesCount = (layerNodesCount[node.depth] || 0) + 1;
     layerNodesCount[node.depth] = newNodesCount;
 
-    const fname = node.file.split('/').pop() || 'error';
+    const label = node.file.split('/').pop() || 'error';
     const dy = Math.abs((newNodesCount % 6) - 3) * (1000.0 / maxDepth / 5); // sine wave with period 6
     const y = 1000 - 2000.0 * (node.depth / maxDepth) + dy;
     const x = -1000 + 2000.0 * ((newNodesCount - 1) / layerWidth);
-    const attrs: NodeAttributes = { x, y, label: fname };
+    const attrs: NodeAttributes = { x, y, label };
     graph.addNode(node.file, attrs);
   }
   for (const edge of edges) {

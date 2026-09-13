@@ -24,11 +24,11 @@ io.on('connection', (socket) => {
 
   socket.on('getFileDependencyGraph', (filePath: string) => {
     console.log(`getFileDependencyGraph: "${filePath}"`);
-    const { edges, nodes } = parseQueue(filePath, { debug: false });
+    const { edges, nodes, pathPackageJson } = parseQueue(filePath, { debug: false });
     console.log(edges.length);
     socket.emit(
       're:getFileDependencyGraph',
-      JSON.stringify({ edges, nodes } satisfies GetFileDependencyGraphPayload)
+      JSON.stringify({ pathPackageJson, edges, nodes } satisfies GetFileDependencyGraphPayload)
     );
   });
   socket.on('getFile', (filePath: string) => {

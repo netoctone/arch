@@ -12,6 +12,11 @@ html, body {
   overflow-y: scroll;
 }
 
+.app-controls-row {
+  display: flex;
+  gap: 10px;
+}
+
 .sigma-and-syntax-modals {
   display: flex;
   position: absolute;
@@ -25,7 +30,12 @@ html, body {
   height: 100%;
 }
 
-.syntax-modals-left, .syntax-modals-right {
+.sigma-container.sigma-container--hidden {
+  width: 0%;
+  visibility: hidden;
+}
+
+.syntax-modals-list {
   border-left: 1px solid black;
   border-right: 1px solid black;
   display: flex;
@@ -34,10 +44,18 @@ html, body {
   height: 100%;
 }
 
+.syntax-modals-list.syntax-modals-list--wide {
+  width: 50%;
+}
+
 .syntax-modal {
   flex: 1;
   position: relative;
   overflow-y: scroll;
+}
+
+.syntax-modal + .syntax-modal {
+  border-top: 1px solid black;
 }
 
 @keyframes highlight-background {
@@ -57,6 +75,6 @@ html, body {
   top: 0;
 }
 
-.syntax-modal + .syntax-modal {
-  border-top: 1px solid black;
+.syntax-modal-fname {
+  font-family: 'Roboto';
 }

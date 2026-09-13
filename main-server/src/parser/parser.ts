@@ -76,10 +76,24 @@ export const parse = (
 };
 
 // @param filePath - absolute path
+const findPackageJson = (filePath: string): string | null => {
+  let result: string | null = null;
+  const parts = filePath.split('/');
+  while (parts.length > 0) {
+    parts.pop();
+    const pathCandidate = `${parts.join('/')}/package.json`;
+    if (existsSync(pathCandidate)) {
+      result = pathCandidate;
+    }
+  }
+  return result;
+};
+
+// @param filePath - absolute path
 export const parseQueue = (
   filePath: string,
   cliOptions: CliOptions
-): { edges: DependencyEdge[]; nodes: FileNode[] } => {
+): { edges: DependencyEdge[]; nodes: FileNode[]; pathPackageJson: string | null } => {
   const edges: DependencyEdge[] = [];
   const nodes: Nodes = new Map();
 
@@ -88,7 +102,12 @@ export const parseQueue = (
   while ((node = queue.shift())) {
     parse(node, cliOptions, edges, nodes, queue);
   }
-  return { edges, nodes: Array.from(nodes.values()) };
+  const pathPackageJson = findPackageJson(filePath);
+  return {
+    edges,
+    nodes: Array.from(nodes.values()),
+    pathPackageJson
+  };
 };
 
 if (process.argv[2]) {
