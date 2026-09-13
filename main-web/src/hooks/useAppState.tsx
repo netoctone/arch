@@ -27,6 +27,7 @@ interface AppState {
 
   openSyntaxModal: (modal: SyntaxModal) => void;
   closeSyntaxModal: (modal: SyntaxModal) => void;
+  compactSyntaxModals: () => void;
   syntaxModals: SyntaxModal[];
 
   setPathPackageJson: (path: string | null) => void;
@@ -115,6 +116,11 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
       return newModals;
     });
   };
+  const compactSyntaxModals = () => {
+    setSyntaxModals((prev) => {
+      return prev.filter(modal => !modal.isClosed);
+    });
+  };
 
   const toggleView = () => {
     const newViewMode = viewMode === 'graph' ? 'files' : 'graph';
@@ -127,6 +133,7 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
     selectedNode,
     openSyntaxModal,
     closeSyntaxModal,
+    compactSyntaxModals,
     syntaxModals,
     setPathPackageJson,
     pathPackageJson,

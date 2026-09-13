@@ -15,6 +15,7 @@ export const AppContent = () => {
     setSigmaGraph,
     selectedNode,
     openSyntaxModal,
+    compactSyntaxModals,
     setPathPackageJson,
     pathPackageJson: pathProject,
     toggleView,
@@ -67,6 +68,7 @@ export const AppContent = () => {
             {isFetchingGraph ? 'fetching ...' : 'fetch'}
           </button>
           <button onClick={() => toggleView()}>view: {viewMode}</button>
+          <button onClick={compactSyntaxModals}>compact</button>
           <div>{pathProject ? <span>project: {pathProject}</span> : null}</div>
         </div>
       </div>
