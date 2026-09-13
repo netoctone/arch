@@ -4,9 +4,14 @@ import { getPathRelativeToPackageJson } from '../pure/get-path-relative-to-packa
 
 const extToLanguage: Record<string, string | undefined> = {
   ts: 'typescript',
+  tsx: 'typescript',
   mts: 'typescript',
   js: 'javascript',
-  mjs: 'jaascript'
+  jsx: 'javascript',
+  mjs: 'javascript',
+  css: 'css',
+  scss: 'css',
+  sass: 'css'
 };
 
 const getLanguageFromFilePath = (filePath: string): string | undefined => {
