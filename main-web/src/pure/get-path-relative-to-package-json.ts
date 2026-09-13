@@ -4,8 +4,9 @@ export const getPathRelativeToPackageJson = (
   pathFile: string,
   pathPackageJson: string | null
 ): string => {
-  if (pathPackageJson) {
-    return pathFile.substring(pathPackageJson.length - packageJsonNameLength);
+  const projectRoot = pathPackageJson ? pathPackageJson.substring(0, pathPackageJson.length - packageJsonNameLength) : null;
+  if (projectRoot && pathFile.startsWith(projectRoot)) {
+    return pathFile.substring(projectRoot.length);
   }
   return pathFile;
 };
