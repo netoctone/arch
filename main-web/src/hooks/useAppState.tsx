@@ -30,6 +30,9 @@ interface AppState {
   compactSyntaxModals: () => void;
   syntaxModals: SyntaxModal[];
 
+  expandSyntaxModal: (modal: SyntaxModal) => void;
+  expandedSyntaxModal: SyntaxModal | null;
+
   setPathPackageJson: (path: string | null) => void;
   pathPackageJson: string | null;
 
@@ -45,6 +48,7 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
   const [viewMode, setViewMode] = useState<ViewMode>('graph');
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [syntaxModals, setSyntaxModals] = useState<SyntaxModal[]>([]);
+  const [expandedModal, setExpandedModal] = useState<SyntaxModal | null>(null);
   const [pathPackageJson, setPathPackageJson] = useState<string | null>(null);
 
   // initialise once
@@ -118,7 +122,12 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
   };
   const compactSyntaxModals = () => {
     setSyntaxModals((prev) => {
-      return prev.filter(modal => !modal.isClosed);
+      return prev.filter((modal) => !modal.isClosed);
+    });
+  };
+  const expandSyntaxModal = (modal: SyntaxModal) => {
+    setExpandedModal((prev) => {
+      return prev ? null : modal;
     });
   };
 
@@ -135,6 +144,8 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
     closeSyntaxModal,
     compactSyntaxModals,
     syntaxModals,
+    expandSyntaxModal,
+    expandedSyntaxModal: expandedModal,
     setPathPackageJson,
     pathPackageJson,
     toggleView,

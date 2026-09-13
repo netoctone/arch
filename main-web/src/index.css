@@ -35,6 +35,13 @@ html, body {
   visibility: hidden;
 }
 
+.syntax-modal-expanded {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-color: white;
+}
+
 .syntax-modals-list {
   border-left: 1px solid black;
   border-right: 1px solid black;
@@ -77,6 +84,10 @@ html, body {
   animation: highlight-background 1000ms;
 }
 
-.syntax-modal-close {
+.syntax-modal-controls {
+  display: flex;
+}
+
+.syntax-modal-icon {
   cursor: pointer;
 }

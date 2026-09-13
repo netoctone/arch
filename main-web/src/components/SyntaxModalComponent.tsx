@@ -15,11 +15,13 @@ const getLanguageFromFilePath = (filePath: string): string | undefined => {
 };
 
 export const SyntaxModalComponent = ({ modal }: { modal: SyntaxModal }) => {
-  const { closeSyntaxModal, pathPackageJson } = useAppState();
+  const { closeSyntaxModal, expandSyntaxModal, expandedSyntaxModal, pathPackageJson } =
+    useAppState();
   const relativePath = getPathRelativeToPackageJson(modal.file, pathPackageJson);
-
   const isAnimated =
     modal.toAnimateAt && modal.toAnimateAt > Temporal.Now.instant().epochMilliseconds;
+  const isExpanded = modal.file === expandedSyntaxModal?.file;
+
   return modal.isClosed ? (
     <div className="syntax-modal"></div>
   ) : (
@@ -28,8 +30,21 @@ export const SyntaxModalComponent = ({ modal }: { modal: SyntaxModal }) => {
         <div className="syntax-modal-fname" title={modal.file}>
           {relativePath}
         </div>
-        <div className="syntax-modal-close" onClick={() => closeSyntaxModal(modal)}>
-          (x)
+        <div className="syntax-modal-controls">
+          {isExpanded ? (
+            <div className="syntax-modal-icon" onClick={() => expandSyntaxModal(modal)}>
+              (-)
+            </div>
+          ) : (
+            <>
+              <div className="syntax-modal-icon" onClick={() => expandSyntaxModal(modal)}>
+                (+)
+              </div>
+              <div className="syntax-modal-icon" onClick={() => closeSyntaxModal(modal)}>
+                (x)
+              </div>
+            </>
+          )}
         </div>
       </div>
       <div className="syntax-modal-content">
