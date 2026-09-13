@@ -2,6 +2,18 @@ import { Prism as PrismSyntaxHighlighter } from 'react-syntax-highlighter';
 import { SyntaxModal, useAppState } from '../hooks/useAppState';
 import { getPathRelativeToPackageJson } from '../pure/get-path-relative-to-package-json';
 
+const extToLanguage: Record<string, string | undefined> = {
+  ts: 'typescript',
+  mts: 'typescript',
+  js: 'javascript',
+  mjs: 'jaascript'
+};
+
+const getLanguageFromFilePath = (filePath: string): string | undefined => {
+  const ext = filePath.split('.').at(-1) || '';
+  return extToLanguage[ext];
+};
+
 export const SyntaxModalComponent = ({ modal }: { modal: SyntaxModal }) => {
   const { closeSyntaxModal, pathPackageJson } = useAppState();
   const relativePath = getPathRelativeToPackageJson(modal.file, pathPackageJson);
@@ -15,8 +27,10 @@ export const SyntaxModalComponent = ({ modal }: { modal: SyntaxModal }) => {
       <div className="syntax-modal-close" onClick={() => closeSyntaxModal(modal)}>
         (x)
       </div>
-      <div className="syntax-modal-fname" title={modal.file}>{relativePath}</div>
-      <PrismSyntaxHighlighter language={modal.file.endsWith('.ts') ? 'typescript' : undefined}>
+      <div className="syntax-modal-fname" title={modal.file}>
+        {relativePath}
+      </div>
+      <PrismSyntaxHighlighter language={getLanguageFromFilePath(modal.file)}>
         {modal.text}
       </PrismSyntaxHighlighter>
     </div>
