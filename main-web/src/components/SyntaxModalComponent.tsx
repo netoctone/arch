@@ -23,16 +23,20 @@ export const SyntaxModalComponent = ({ modal }: { modal: SyntaxModal }) => {
   return modal.isClosed ? (
     <div className="syntax-modal"></div>
   ) : (
-    <div className={`syntax-modal ${isAnimated ? 'syntax-modal--animated' : ''}`}>
-      <div className="syntax-modal-close" onClick={() => closeSyntaxModal(modal)}>
-        (x)
+    <div className="syntax-modal">
+      <div className={`syntax-modal-title ${isAnimated ? 'syntax-modal-title--animated' : ''}`}>
+        <div className="syntax-modal-fname" title={modal.file}>
+          {relativePath}
+        </div>
+        <div className="syntax-modal-close" onClick={() => closeSyntaxModal(modal)}>
+          (x)
+        </div>
       </div>
-      <div className="syntax-modal-fname" title={modal.file}>
-        {relativePath}
+      <div className="syntax-modal-content">
+        <PrismSyntaxHighlighter language={getLanguageFromFilePath(modal.file)}>
+          {modal.text}
+        </PrismSyntaxHighlighter>
       </div>
-      <PrismSyntaxHighlighter language={getLanguageFromFilePath(modal.file)}>
-        {modal.text}
-      </PrismSyntaxHighlighter>
     </div>
   );
 };

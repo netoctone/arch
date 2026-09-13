@@ -64,17 +64,19 @@ html, body {
   100% { background-color: white; }
 }
 
-.syntax-modal--animated {
-  animation: highlight-background 2000ms;
+.syntax-modal-title {
+  background-color: white;
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Roboto';
+}
+
+.syntax-modal-title--animated {
+  animation: highlight-background 1000ms;
 }
 
 .syntax-modal-close {
   cursor: pointer;
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
-.syntax-modal-fname {
-  font-family: 'Roboto';
 }
