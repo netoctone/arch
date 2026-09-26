@@ -15,6 +15,8 @@ export const buildSigmaGraphFromPayloadGraph = ({
   edges,
   nodes
 }: GetFileDependencyGraphPayload): SigmaGraph => {
+  const fileToDepth = new Map<string, number>(nodes.map(({ file, depth }) => [file, depth]));
+
   const graph = new Graph<NodeAttributes, EdgeAttributes>();
   let maxDepth = 0;
   const layerToWidth: number[] = [];
@@ -39,7 +41,17 @@ export const buildSigmaGraphFromPayloadGraph = ({
     if (graph.hasEdge(edge.parentFile, edge.childFile)) {
       continue;
     }
-    graph.addEdge(edge.parentFile, edge.childFile);
+    const parentDepth = fileToDepth.get(edge.parentFile);
+    const childDepth = fileToDepth.get(edge.childFile);
+    graph.addEdge(edge.parentFile, edge.childFile, {
+      type: 'arrow',
+      color:
+        !parentDepth || !childDepth || parentDepth < childDepth
+          ? undefined
+          : parentDepth === childDepth
+            ? 'yellow'
+            : 'red'
+    });
   }
   return graph;
 };
