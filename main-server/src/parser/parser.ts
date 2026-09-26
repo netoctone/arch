@@ -89,6 +89,43 @@ const findPackageJson = (filePath: string): string | null => {
   return result;
 };
 
+export const optimizeDepths = (
+  rootFilePath: string,
+  edges: DependencyEdge[],
+  nodes: Nodes
+): Nodes => {
+  const parentToAllChildren: Map<string, string[]> = new Map();
+  for (const edge of edges) {
+    const allChildren = parentToAllChildren.get(edge.parentFile) || [];
+    allChildren.push(edge.childFile);
+    parentToAllChildren.set(edge.parentFile, allChildren);
+  }
+
+  const res: Nodes = new Map(nodes);
+
+  const queue: string[] = [rootFilePath];
+  let queueInd = 0;
+  let parentFile: string | undefined;
+  while ((parentFile = queue[queueInd++])) {
+    const parentNode = res.get(parentFile);
+    if (!parentNode) {
+      continue;
+    }
+    const parentDepth = parentNode.depth;
+    for (const childFile of parentToAllChildren.get(parentFile) || []) {
+      const childNode = res.get(childFile);
+      if (!childNode) {
+        continue;
+      }
+      if (parentDepth >= childNode.depth) {
+        childNode.depth = parentDepth + 1;
+      }
+      queue.push(childFile);
+    }
+  }
+  return res;
+};
+
 // @param filePath - absolute path
 export const parseQueue = (
   filePath: string,
@@ -97,15 +134,22 @@ export const parseQueue = (
   const edges: DependencyEdge[] = [];
   const nodes: Nodes = new Map();
 
-  const queue: FileNode[] = [{ file: filePath, depth: 0 }];
+  const queue: FileNode[] = [{ file: filePath, depth: 1 }];
+  let queueInd = 0;
   let node: FileNode | undefined;
-  while ((node = queue.shift())) {
+  while ((node = queue[queueInd++])) {
     parse(node, cliOptions, edges, nodes, queue);
   }
   const pathPackageJson = findPackageJson(filePath);
+  const optimize = true;
   return {
     edges,
-    nodes: Array.from(nodes.values()),
+    nodes: Array.from(
+      optimize
+        ? // prettier
+          optimizeDepths(filePath, edges, nodes).values()
+        : nodes.values()
+    ),
     pathPackageJson
   };
 };
